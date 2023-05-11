@@ -50,4 +50,4 @@ class Primary_object:
                 setattr(self, key, None)
     # Shows the value of all attributes
     def show(instance) -> None:
-        print(",   ".join([f"{key}: {value}" for key, value in instance.__dict__.items()]))
+        print("\t".join([f"{key}: {value}" for key, value in instance.__dict__.items()]))
