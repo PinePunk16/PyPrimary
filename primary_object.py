@@ -7,6 +7,7 @@ import random
 import string
 
 
+
 # Run "super().__init__(<directory>)" in the constructor of child classes.
 # To make different objects be related, in an object store the "id" attribute of the other.
 # It's not adviced to change an object's "id".
@@ -35,6 +36,9 @@ class Primary_object:
                 data[key] = value
         
         try:
+            if not os.path.isdir(self._directory):
+                os.mkdir(self._directory)
+            
             with open(f"{self._directory}/{self.id}.json", "w") as json_file:
                 json.dump(data, json_file, indent = 4)
         except Exception as exception:
@@ -59,10 +63,16 @@ class Primary_object:
     # Shows the value of all attributes
     def show(self) -> None:
         print("\t".join([f"{key}: {value}" for key, value in self.__dict__.items()]))
-    # Loads a random line from "pool_file" and gives it to the parameter with name passed as string, converting it to its type in the process
-    def generate_parameter(self, pool_file: str, parameter: str) -> None:
+    # Loads a random line from a pool file and gives it to the parameter with name passed as string, converting it to its type in the process.
+    # The pool file for any parameter is "<directory>/pools/<parameter name>.txt"
+    def generate_parameter(self, parameter: str) -> None:
         try:
-            with open(pool_file, "r") as file:
+            if not os.path.isdir(f"{self._directory}/pools"):
+                os.mkdir(f"{self._directory}/pools")
+            if not os.path.isfile(f"{self._directory}/pools/{parameter}.txt"):
+                open(f"{self._directory}/pools/{parameter}.txt", 'w').close()
+                
+            with open(f"{self._directory}/pools/{parameter}.txt", "r") as file:
                 setattr(self, parameter, random.choice(file.readlines()).strip())
         except Exception as exception:
             print(f"ERROR: {exception}")
