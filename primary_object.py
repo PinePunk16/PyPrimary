@@ -65,23 +65,21 @@ class Primary_object:
         print("\t".join([f"{key}: {value}" for key, value in self.__dict__.items()]))
     # Loads a random line from a pool file and gives it to the parameter with name passed as string, converting it to its type in the process
     # The pool file for any parameter is "<directory>/pools/<parameter name>.txt"
-    # If the paramether ends with "_" nothing appens. This is done to allow for unequal chance generation and number ranges
     def generate_parameter(self, parameter: str) -> None:
-        if not parameter.endswith("_"):
-            try:
-                if not os.path.isdir(f"{self._directory}/pools"):
-                    os.mkdir(f"{self._directory}/pools")
-                if not os.path.isfile(f"{self._directory}/pools/{parameter}.txt"):
-                    open(f"{self._directory}/pools/{parameter}.txt", 'w').close()
-                    
-                with open(f"{self._directory}/pools/{parameter}.txt", "r") as file:
-                    lines: List[str] = file.readlines()
-                    if lines:
-                        setattr(self, parameter, random.choice(lines).strip())
-            except Exception as exception:
-                print(f"ERROR: {exception}")
-    # Calls the function "generate_parameter" for all parameters, except for "id" and "_directory"
+        try:
+            if not os.path.isdir(f"{self._directory}/pools"):
+                os.mkdir(f"{self._directory}/pools")
+            if not os.path.isfile(f"{self._directory}/pools/{parameter}.txt"):
+                open(f"{self._directory}/pools/{parameter}.txt", 'w').close()
+                
+            with open(f"{self._directory}/pools/{parameter}.txt", "r") as file:
+                lines: List[str] = file.readlines()
+                if lines:
+                    setattr(self, parameter, random.choice(lines).strip())
+        except Exception as exception:
+            print(f"ERROR: {exception}")
+    # Calls the function "generate_parameter" for all parameters, except for "id" and "_directory" and paramethers ending in "_"
     def generate(self) -> None:
         for key, value in self.__dict__.items():
-            if not key == "id" and not key == "_directory":
+            if not key == "id" and not key == "_directory" and not key.endswith("_"):
                 self.generate_parameter(key)
