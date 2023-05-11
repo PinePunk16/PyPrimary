@@ -39,7 +39,7 @@ class Primary_object:
             if not os.path.isdir(self._directory):
                 os.mkdir(self._directory)
             
-            with open(f"{self._directory}/{self.id}.json", "w") as json_file:
+            with open(os.path.join(self._directory, f"{self.id}.json"), "w") as json_file:
                 json.dump(data, json_file, indent = 4)
         except Exception as exception:
             print(f"ERROR: {exception}")
@@ -48,14 +48,19 @@ class Primary_object:
     def load(self) -> None:
         data: Dict = {}
         try:
-            with open(f"{self._directory}/{self.id}.json", "r") as json_file:
+            with open(os.path.join(self._directory, f"{self.id}.json"), "r") as json_file:
                 data = json.load(json_file)
         except Exception as exception:
             print(f"ERROR: {exception}")
             return None
         
         for key, value in data.items():
-            setattr(self, key, value)
+            if type(getattr(self, key)) == tuple:
+                setattr(self, key, tuple(value))
+            elif type(getattr(self, key)) == set:
+                setattr(self, key, set(value))
+            else:
+                setattr(self, key, value)
             
         for key, value in self.__dict__.items():
             if key not in data and key != "_directory":
@@ -67,18 +72,21 @@ class Primary_object:
     # The pool file for any parameter is "<directory>/pools/<parameter name>.txt"
     def generate_parameter(self, parameter: str) -> None:
         try:
-            if not os.path.isdir(f"{self._directory}/pools"):
-                os.mkdir(f"{self._directory}/pools")
-            if not os.path.isfile(f"{self._directory}/pools/{parameter}.txt"):
-                open(f"{self._directory}/pools/{parameter}.txt", 'w').close()
+            directory_path = os.path.join(self._directory, "pools")
+            if not os.path.exists(directory_path):
+                os.makedirs(directory_path)
+            
+            file_path = os.path.join(self._directory, "pools", f"{parameter}.txt")
+            if not os.path.isfile(file_path):
+                open(file_path, 'w').close()
                 
-            with open(f"{self._directory}/pools/{parameter}.txt", "r") as file:
-                lines: List[str] = file.readlines()
+            with open(file_path, "r") as file:
+                lines = file.readlines()
                 if lines:
                     setattr(self, parameter, random.choice(lines).strip())
-        except Exception as exception:
-            print(f"ERROR: {exception}")
-    # Calls the function "generate_parameter" for all parameters, except for "id" and "_directory" and paramethers ending in "_"
+        except Exception as e:
+            print(f"ERROR: {e}")
+    # Calls the function "generate_parameter" for all parameters, except for "id" and "_directory" and parameters ending in "_"
     def generate(self) -> None:
         for key, value in self.__dict__.items():
             if not key == "id" and not key == "_directory" and not key.endswith("_"):
