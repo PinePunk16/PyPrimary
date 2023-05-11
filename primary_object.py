@@ -1,9 +1,11 @@
-from typing import Dict, List
-
+from typing import Dict
 import json
 import os
 import random
 import string
+
+from parse_chance import parse_chance
+
 
 
 class Primary_object:
@@ -21,7 +23,7 @@ class Primary_object:
                 break                
     # Saves to json. Ignores attributes that start with "_"
     def save(self) -> None:
-        data: Dict = {}
+        data: dict = {}
         for key, value in self.__dict__.items():
             if not key.startswith("_"):
                 if not isinstance(value, (int, float, str, bool, dict, list, tuple)):
@@ -39,7 +41,7 @@ class Primary_object:
             return None       
     # Loads from json. Sets attributes that start with "_" to None, except for saving and loading directory
     def load(self) -> None:
-        data: Dict = {}
+        data: dict = {}
         try:
             with open(os.path.join(self._directory_, f"{self.id_}.json"), "r") as json_file:
                 data = json.load(json_file)
@@ -60,25 +62,25 @@ class Primary_object:
                 setattr(self, key, None)
     # Shows the value of all attributes
     def show(self) -> None:
-        print("\t".join([f"{key}: {value}" for key, value in self.__dict__.items()]))   
+        print("\t".join([f"{key}: {value}" for key, value in self.__dict__.items()]))
     # Loads a random line from a pool file and gives it to the parameter with name passed as string, converting it to its type in the process
-    # The pool file for any parameter is "<directory>/pools/<parameter name>.txt"
+    # The pool file for any parameter is "<directory>/pools/<parameter name>.pool"
     def generate_parameter(self, parameter: str) -> None:
         try:
-            directory_path = os.path.join(self._directory_, "pools")
+            directory_path: str = os.path.join(self._directory_, "pools")
             if not os.path.exists(directory_path):
                 os.makedirs(directory_path)
             
-            file_path = os.path.join(directory_path, f"{parameter}.txt")
+            file_path: str = os.path.join(directory_path, f"{parameter}.pool")
             if not os.path.isfile(file_path):
                 open(file_path, 'w').close()
-                
-            with open(file_path, "r") as file:
-                lines = file.readlines()
-                if lines:
-                    setattr(self, parameter, random.choice(lines).strip())
-        except Exception as e:
-            print(f"ERROR: {e}")
+            
+            value: any = parse_chance(file_path = file_path)
+            if value is not None:
+                value = type(getattr(self, parameter))(value)
+            setattr(self, parameter, value)
+        except Exception as exception:
+            print(f"ERROR: {exception}")
     # Calls the function "generate_parameter" for all parameters, except parameters ending in "_"
     def generate(self) -> None:
         for key, value in self.__dict__.items():
