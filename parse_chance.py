@@ -1,9 +1,31 @@
 import random
 
-# Picks a random line from a file
-# If the line is a percentage (ex. 50%) the file will pick a random line, in the lines before the next percentage or the end of file, with a 50% chance
-# If there's at least one percentage the percentages have to line up to 100, otherwise the result is None
-# To define a None value, make the percentage section it's in empty
+
+
+"""
+Picks a random line from a file. If the line is a percentage (e.g. "50%"), the function will pick a random line 
+from the lines before the next percentage (or the end of the file) with the specified probability. 
+
+There must be at least one percentage, and the percentages must add up to 100, otherwise the function will return None. 
+To define a None value, make the percentage section it's in empty.
+
+To select a random integer in a range, use the syntax "random[a, b)" for an exclusive range or "random[a, b]" for an inclusive range.
+
+Example usage:
+
+----------------
+50%
+    4
+    2
+25%
+25%
+    random[0, 10)
+-----------------
+
+In this example, the function will generate either 4 or 2 with a 50% chance. 
+With a 25% chance, it will return None. 
+With another 25% chance, it will generate a random value between 0 (inclusive) and 10 (inclusive).
+"""
 
 def parse_chance(file_path: str) -> str:
     lines: list[str] = []
@@ -47,9 +69,21 @@ def parse_chance(file_path: str) -> str:
                 result_list = non_percentages[index]
                 break
     else:
-        result_list = non_percentages[0]
+        return None
     
     if result_list:
-        return random.choice(result_list)
+        result: str = random.choice(result_list)
+        
+        if (result.startswith("random(") or result.startswith("random[")) and (result.endswith(")") or result.endswith("]")):
+            values: list[float] = result[7:-1].split(",")
+            min_value: int = int(values[0])
+            max_value: int = int(values[1])
+
+            left_inclusive: bool = result[6] == "["
+            right_inclusive: bool  = result[-2] == "]"
+            
+            return str(random.randint(min_value if left_inclusive else min_value + 1, max_value if right_inclusive else max_value - 1))
+        else:
+            return result
     else:
         return None
