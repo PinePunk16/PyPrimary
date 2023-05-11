@@ -65,7 +65,7 @@ class Primary_object:
         print("\t".join([f"{key}: {value}" for key, value in self.__dict__.items()]))
     # Loads a random line from a pool file and gives it to the parameter with name passed as string, converting it to its type in the process
     # The pool file for any parameter is "<directory>/pools/<parameter name>.txt"
-    # If the paramether ends with "_" nothing appens. This is done to allow for unequal chance generation and number ranges.
+    # If the paramether ends with "_" nothing appens. This is done to allow for unequal chance generation and number ranges
     def generate_parameter(self, parameter: str) -> None:
         if not parameter.endswith("_"):
             try:
