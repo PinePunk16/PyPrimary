@@ -11,7 +11,7 @@ To define a None value, make the percentage section it's in empty.
 
 To select a random integer in a range, use the syntax "random[a, b)" for an exclusive range or "random[a, b]" for an inclusive range.
 
-Example usage:
+Example 1:
 
 ----------------
 50%
@@ -25,6 +25,21 @@ Example usage:
 In this example, the function will generate either 4 or 2 with a 50% chance. 
 With a 25% chance, it will return None. 
 With another 25% chance, it will generate a random value between 0 (inclusive) and 10 (inclusive).
+
+Example 2:
+----------------
+99.99%
+    Martha
+    John
+    Alan
+    Jake
+    Alex
+0.01%
+    Ashlathon the conquerer of worlds
+-----------------
+
+In this example, the function will generate with a high change a name between "Martha", "John", "Alan", "Jake" and "Alex".
+With a very low chance, the name will be "Ashlathon the conquerer of worlds".
 """
 
 def parse_chance(file_path: str) -> str:
