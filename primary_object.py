@@ -34,14 +34,22 @@ class Primary_object:
                     value = str(value)
                 data[key] = value
         
-        with open(f"{self._directory}/{self.id}.json", "w") as json_file:
-            json.dump(data, json_file, indent = 4)
+        try:
+            with open(f"{self._directory}/{self.id}.json", "w") as json_file:
+                json.dump(data, json_file, indent = 4)
+        except Exception as exception:
+            print(f"ERROR: {exception}")
+            return None
     # Loads from json. Sets attributes that start with "_" to None, except for saving and loading directory
     def load(self) -> None:
         data: Dict = {}
-        with open(f"{self._directory}/{self.id}.json", "r") as json_file:
-            data = json.load(json_file)
-    
+        try:
+            with open(f"{self._directory}/{self.id}.json", "r") as json_file:
+                data = json.load(json_file)
+        except Exception as exception:
+            print(f"ERROR: {exception}")
+            return None
+        
         for key, value in data.items():
             setattr(self, key, value)
             
@@ -49,5 +57,12 @@ class Primary_object:
             if key not in data and key != "_directory":
                 setattr(self, key, None)
     # Shows the value of all attributes
-    def show(instance) -> None:
-        print("\t".join([f"{key}: {value}" for key, value in instance.__dict__.items()]))
+    def show(self) -> None:
+        print("\t".join([f"{key}: {value}" for key, value in self.__dict__.items()]))
+    # Loads a random line from "pool_file" and gives it to the parameter with name passed as string, converting it to its type in the process
+    def generate_parameter(self, pool_file: str, parameter: str) -> None:
+        try:
+            with open(pool_file, "r") as file:
+                setattr(self, parameter, random.choice(file.readlines()).strip())
+        except Exception as exception:
+            print(f"ERROR: {exception}")
