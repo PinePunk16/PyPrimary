@@ -1,31 +1,24 @@
-# made by PinePunk16 on GitHub
-
 from typing import Dict, List
+
 import json
 import os
 import random
 import string
 
 
-
-# Run "super().__init__(<directory>)" in the constructor of child classes.
-# To make different objects be related, in an object store the "id" attribute of the other.
-# It's not adviced to change an object's "id".
-# To modify the saving and loading directory, modify the "_directory" attribute.
-
 class Primary_object:
     # Generates an ID and saves the desired folder. If not given it's assumed as project root
     def __init__(self, directory = "") -> None:
-        self._directory: str = directory
-        self.id: int = 0
-        
-        if not os.path.exists(self._directory):
-            os.mkdir(self._directory)
-        
+        self._directory_: str = directory
+        self.id_: str = ""
+
+        if not os.path.exists(self._directory_):
+            os.mkdir(self._directory_)
+
         while True:
-            self.id = "".join(random.choices(string.ascii_letters + string.digits, k = 12))
-            if self.id not in os.listdir(self._directory):
-                break
+            self.id_ = "".join(random.choices(string.ascii_letters + string.digits, k=12))
+            if self.id_ not in os.listdir(self._directory_):
+                break                
     # Saves to json. Ignores attributes that start with "_"
     def save(self) -> None:
         data: Dict = {}
@@ -36,19 +29,19 @@ class Primary_object:
                 data[key] = value
         
         try:
-            if not os.path.isdir(self._directory):
-                os.mkdir(self._directory)
+            if not os.path.isdir(self._directory_):
+                os.mkdir(self._directory_)
             
-            with open(os.path.join(self._directory, f"{self.id}.json"), "w") as json_file:
+            with open(os.path.join(self._directory_, f"{self.id_}.json"), "w") as json_file:
                 json.dump(data, json_file, indent = 4)
         except Exception as exception:
             print(f"ERROR: {exception}")
-            return None
+            return None       
     # Loads from json. Sets attributes that start with "_" to None, except for saving and loading directory
     def load(self) -> None:
         data: Dict = {}
         try:
-            with open(os.path.join(self._directory, f"{self.id}.json"), "r") as json_file:
+            with open(os.path.join(self._directory_, f"{self.id_}.json"), "r") as json_file:
                 data = json.load(json_file)
         except Exception as exception:
             print(f"ERROR: {exception}")
@@ -63,20 +56,20 @@ class Primary_object:
                 setattr(self, key, value)
             
         for key, value in self.__dict__.items():
-            if key not in data and key != "_directory":
+            if key not in data and key != "_directory_":
                 setattr(self, key, None)
     # Shows the value of all attributes
     def show(self) -> None:
-        print("\t".join([f"{key}: {value}" for key, value in self.__dict__.items()]))
+        print("\t".join([f"{key}: {value}" for key, value in self.__dict__.items()]))   
     # Loads a random line from a pool file and gives it to the parameter with name passed as string, converting it to its type in the process
     # The pool file for any parameter is "<directory>/pools/<parameter name>.txt"
     def generate_parameter(self, parameter: str) -> None:
         try:
-            directory_path = os.path.join(self._directory, "pools")
+            directory_path = os.path.join(self._directory_, "pools")
             if not os.path.exists(directory_path):
                 os.makedirs(directory_path)
             
-            file_path = os.path.join(self._directory, "pools", f"{parameter}.txt")
+            file_path = os.path.join(directory_path, f"{parameter}.txt")
             if not os.path.isfile(file_path):
                 open(file_path, 'w').close()
                 
@@ -86,8 +79,8 @@ class Primary_object:
                     setattr(self, parameter, random.choice(lines).strip())
         except Exception as e:
             print(f"ERROR: {e}")
-    # Calls the function "generate_parameter" for all parameters, except for "id" and "_directory" and parameters ending in "_"
+    # Calls the function "generate_parameter" for all parameters, except parameters ending in "_"
     def generate(self) -> None:
         for key, value in self.__dict__.items():
-            if not key == "id" and not key == "_directory" and not key.endswith("_"):
+            if not key.endswith("_"):
                 self.generate_parameter(key)
