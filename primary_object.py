@@ -76,3 +76,8 @@ class Primary_object:
                 setattr(self, parameter, random.choice(file.readlines()).strip())
         except Exception as exception:
             print(f"ERROR: {exception}")
+    # Calls the function "generate_parameter" for all parameters, except for "id" and "_directory"
+    def generate(self) -> None:
+        for key in self.__dict__.items():
+            if not key == "id" and not key == "_directory":
+                self.generate_parameter(key)
