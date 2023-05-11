@@ -1,6 +1,6 @@
 # made by PinePunk16 on GitHub
 
-from typing import Dict
+from typing import Dict, List
 import json
 import os
 import random
@@ -65,17 +65,21 @@ class Primary_object:
         print("\t".join([f"{key}: {value}" for key, value in self.__dict__.items()]))
     # Loads a random line from a pool file and gives it to the parameter with name passed as string, converting it to its type in the process
     # The pool file for any parameter is "<directory>/pools/<parameter name>.txt"
+    # If the paramether ends with "_" nothing appens. This is done to allow for unequal chance generation and number ranges.
     def generate_parameter(self, parameter: str) -> None:
-        try:
-            if not os.path.isdir(f"{self._directory}/pools"):
-                os.mkdir(f"{self._directory}/pools")
-            if not os.path.isfile(f"{self._directory}/pools/{parameter}.txt"):
-                open(f"{self._directory}/pools/{parameter}.txt", 'w').close()
-                
-            with open(f"{self._directory}/pools/{parameter}.txt", "r") as file:
-                setattr(self, parameter, random.choice(file.readlines()).strip())
-        except Exception as exception:
-            print(f"ERROR: {exception}")
+        if not parameter.endswith("_"):
+            try:
+                if not os.path.isdir(f"{self._directory}/pools"):
+                    os.mkdir(f"{self._directory}/pools")
+                if not os.path.isfile(f"{self._directory}/pools/{parameter}.txt"):
+                    open(f"{self._directory}/pools/{parameter}.txt", 'w').close()
+                    
+                with open(f"{self._directory}/pools/{parameter}.txt", "r") as file:
+                    lines: List[str] = file.readlines()
+                    if lines:
+                        setattr(self, parameter, random.choice(lines).strip())
+            except Exception as exception:
+                print(f"ERROR: {exception}")
     # Calls the function "generate_parameter" for all parameters, except for "id" and "_directory"
     def generate(self) -> None:
         for key, value in self.__dict__.items():
