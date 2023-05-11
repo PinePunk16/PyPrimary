@@ -63,7 +63,7 @@ class Primary_object:
     # Shows the value of all attributes
     def show(self) -> None:
         print("\t".join([f"{key}: {value}" for key, value in self.__dict__.items()]))
-    # Loads a random line from a pool file and gives it to the parameter with name passed as string, converting it to its type in the process.
+    # Loads a random line from a pool file and gives it to the parameter with name passed as string, converting it to its type in the process
     # The pool file for any parameter is "<directory>/pools/<parameter name>.txt"
     def generate_parameter(self, parameter: str) -> None:
         try:
@@ -78,6 +78,6 @@ class Primary_object:
             print(f"ERROR: {exception}")
     # Calls the function "generate_parameter" for all parameters, except for "id" and "_directory"
     def generate(self) -> None:
-        for key in self.__dict__.items():
+        for key, value in self.__dict__.items():
             if not key == "id" and not key == "_directory":
                 self.generate_parameter(key)
