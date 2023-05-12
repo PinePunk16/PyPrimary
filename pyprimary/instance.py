@@ -1,5 +1,5 @@
-# primary_object.py
-# The main file of the library.
+# instance.py
+# Class to be inherited by primary objects
 
 from typing import Dict
 import json
@@ -7,11 +7,11 @@ import os
 import random
 import string
 
-from parse_chance import parse_chance
+from pyprimary.parser import parse_pool
 
 
 
-class Primary_object:
+class Instance:
     # Generates an ID and saves the desired folder. If not given it's assumed as project root
     def __init__(self, directory = "") -> None:
         self._directory_: str = directory
@@ -78,7 +78,7 @@ class Primary_object:
             if not os.path.isfile(file_path):
                 open(file_path, 'w').close()
             
-            value: any = parse_chance(file_path = file_path)
+            value: any = parse_pool(file_path = file_path)
             if value is not None:
                 value = type(getattr(self, parameter))(value)
             setattr(self, parameter, value)

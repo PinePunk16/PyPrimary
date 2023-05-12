@@ -1,7 +1,7 @@
 # person.py
 # Example of implementation of primary_object.
 
-from EXAMPLE_person import Person
+from person import Person
 
 
 

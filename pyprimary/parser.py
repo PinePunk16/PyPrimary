@@ -1,4 +1,4 @@
-# parse_chance.py
+# parser.py
 # For parsing of pool files.
 
 import random
@@ -45,7 +45,7 @@ In this example, the function will generate with a high change a name between "M
 With a very low chance, the name will be "Ashlathon the conquerer of worlds".
 """
 
-def parse_chance(file_path: str) -> str:
+def parse_pool(file_path: str) -> str:
     lines: list[str] = []
     
     try:
