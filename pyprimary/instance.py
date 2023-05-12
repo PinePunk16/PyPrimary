@@ -1,7 +1,6 @@
 # instance.py
 # Class to be inherited by primary objects
 
-from typing import Dict
 import bson
 import os
 import random
