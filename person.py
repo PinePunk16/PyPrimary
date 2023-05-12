@@ -1,5 +1,5 @@
 # person.py
-# Example of implementation of primary_object.
+# Example of implementation of "Instance".
 
 from enum import Enum
 import random

@@ -1,5 +1,5 @@
 # instance.py
-# Class to be inherited by primary objects
+# Class to be inherited by primary objects.
 
 import bson
 import os
