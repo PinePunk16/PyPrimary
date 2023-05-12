@@ -1,3 +1,6 @@
+# primary_object.py
+# The main file of the library.
+
 from typing import Dict
 import json
 import os

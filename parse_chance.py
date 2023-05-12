@@ -1,3 +1,6 @@
+# parse_chance.py
+# For parsing of pool files.
+
 import random
 
 
