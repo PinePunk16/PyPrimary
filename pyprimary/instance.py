@@ -2,7 +2,7 @@
 # Class to be inherited by primary objects
 
 from typing import Dict
-import json
+import bson
 import os
 import random
 import string
@@ -23,8 +23,8 @@ class Instance:
         while True:
             self.id_ = "".join(random.choices(string.ascii_letters + string.digits, k=12))
             if self.id_ not in os.listdir(self._directory_):
-                break                
-    # Saves to json. Ignores attributes that start with "_"
+                break
+    # Saves to BSON. Ignores attributes that start with "_"
     def save(self) -> None:
         data: dict = {}
         for key, value in self.__dict__.items():
@@ -37,17 +37,17 @@ class Instance:
             if not os.path.isdir(self._directory_):
                 os.mkdir(self._directory_)
             
-            with open(os.path.join(self._directory_, f"{self.id_}.json"), "w") as json_file:
-                json.dump(data, json_file, indent = 4)
+            with open(os.path.join(self._directory_, f"{self.id_}.bson"), "wb") as bson_file:
+                bson_file.write(bson.dumps(data))
         except Exception as exception:
             print(f"ERROR: {exception}")
             return None       
-    # Loads from json. Sets attributes that start with "_" to None, except for saving and loading directory
+    # Loads from BSON. Sets attributes that start with "_" to None, except for saving and loading directory
     def load(self) -> None:
         data: dict = {}
         try:
-            with open(os.path.join(self._directory_, f"{self.id_}.json"), "r") as json_file:
-                data = json.load(json_file)
+            with open(os.path.join(self._directory_, f"{self.id_}.bson"), "rb") as bson_file:
+                data = bson.loads(bson_file.read())
         except Exception as exception:
             print(f"ERROR: {exception}")
             return None
